@@ -1,12 +1,45 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
+const initialValues = { username: '', password: '' }
+
 const Login = () => {
+
+    const [ error, setError ] = useState('');
+    const [ formValues, setFormValues ] = useState(initialValues);
     
+    const handleChanges = (e) => {
+        setFormValues({ ...formValues, [e.target.name]: e.target.value });
+    }
+
+    const handleSubmit = e => {
+
+    }
+
     return(<ComponentContainer>
         <ModalContainer>
             <h1>Welcome to Blogger Pro</h1>
             <h2>Please enter your account information.</h2>
+            <form onSubmit={handleSubmit}>
+                <label htmlFor='username'>Username</label>
+                <input
+                    id='username'
+                    name='username'
+                    value={formValues.username}
+                    onChange={handleChanges}
+                    />
+                <label htmlFor='password'>Password</label>
+                <input 
+                    id='password'
+                    name='password'
+                    value={formValues.password}
+                    onChange={handleChanges}
+                    />
+                <div>   
+                    <button id='submit'>Login</button>
+                </div>
+            </form>
+            <p id='error'>{error ? 'Username or Password not valid' : ''}</p>
         </ModalContainer>
     </ComponentContainer>);
 }
