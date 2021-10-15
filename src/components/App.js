@@ -2,7 +2,6 @@ import React from 'react';
 import { Route, Redirect } from "react-router-dom";
 import PrivateRoute from './PrivateRoute';
 import styled from 'styled-components';
-
 import Header from './Header';
 import LambdaHeader from './LambdaHeader';
 import View from './View';
