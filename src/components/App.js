@@ -20,9 +20,6 @@ const App = () => {
       <Route path="/logout">
           <Logout/>
         </Route> 
-      {/* <Route path="/view">
-          <View/> */}
-        {/* </Route>  */}
       <Route path="/login">
           <Login/>
         </Route> 
