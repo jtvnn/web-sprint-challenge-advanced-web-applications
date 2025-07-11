@@ -1,6 +1,6 @@
 # Sprint Challenge: Advanced Web Applications
 
-In this challenge, you will write the logic for [THIS APP](https://advanced-apps-articles.herokuapp.com/).
+In this challenge, you will write the logic for [THIS APP](https://web-sc-11.netlify.app/). **Allow a few momemts after first try of login for api to spin up**
 
 ## Tools
 
