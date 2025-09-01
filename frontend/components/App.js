@@ -5,6 +5,7 @@ import LoginForm from './LoginForm'
 import Message from './Message'
 import ArticleForm from './ArticleForm'
 import Spinner from './Spinner'
+import axios from 'axios';
 
 const articlesUrl = 'http://localhost:9000/api/articles'
 const loginUrl = 'http://localhost:9000/api/login'
@@ -18,8 +19,12 @@ export default function App() {
 
   // ✨ Research `useNavigate` in React Router v.6
   const navigate = useNavigate()
-  const redirectToLogin = () => { /* ✨ implement */ }
-  const redirectToArticles = () => { /* ✨ implement */ }
+  const redirectToLogin = () => { /* ✨ implement */ 
+    navigate("/login");
+  }
+  const redirectToArticles = () => { /* ✨ implement */
+    navigate("/articles");
+   }
 
   const logout = () => {
     // ✨ implement
@@ -27,15 +32,30 @@ export default function App() {
     // and a message saying "Goodbye!" should be set in its proper state.
     // In any case, we should redirect the browser back to the login screen,
     // using the helper above.
+    
   }
 
-  const login = ({ username, password }) => {
+  const login = async ({ username, password }) => {
     // ✨ implement
     // We should flush the message state, turn on the spinner
     // and launch a request to the proper endpoint.
     // On success, we should set the token to local storage in a 'token' key,
     // put the server success message in its proper state, and redirect
     // to the Articles screen. Don't forget to turn off the spinner!
+    setMessage("");
+    setSpinnerOn(true);
+    try {
+      const response = await axios.post(loginUrl, { username, password });
+      const token = response.data.token;
+      localStorage.setItem("token", token);
+      setMessage(response.data.message);
+      redirectToArticles();
+    } catch (err) {
+      setMessage(`Login failed: ${err.response.data.message}`);
+    } finally {
+      setSpinnerOn(false);
+    }
+
   }
 
   const getArticles = () => {
@@ -68,8 +88,8 @@ export default function App() {
   return (
     // ✨ fix the JSX: `Spinner`, `Message`, `LoginForm`, `ArticleForm` and `Articles` expect props ❗
     <>
-      <Spinner />
-      <Message />
+      <Spinner isActive={spinnerOn} />
+      <Message text={message}/>
       <button id="logout" onClick={logout}>Logout from app</button>
       <div id="wrapper" style={{ opacity: spinnerOn ? "0.25" : "1" }}> {/* <-- do not change this line */}
         <h1>Advanced Web Applications</h1>
