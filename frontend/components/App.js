@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { NavLink, Routes, Route, useNavigate } from 'react-router-dom'
 import Articles from './Articles'
 import LoginForm from './LoginForm'
@@ -32,7 +32,8 @@ export default function App() {
     // and a message saying "Goodbye!" should be set in its proper state.
     // In any case, we should redirect the browser back to the login screen,
     // using the helper above.
-    
+    localStorage.removeItem("token");
+    redirectToLogin();
   }
 
   const login = async ({ username, password }) => {
@@ -67,6 +68,28 @@ export default function App() {
     // If something goes wrong, check the status of the response:
     // if it's a 401 the token might have gone bad, and we should redirect to login.
     // Don't forget to turn off the spinner!
+    setMessage("");
+    setSpinnerOn(true);
+
+    useEffect(() => {
+      const token = localStorage.getItem("token")
+      if(!token) {
+        redirectToLogin();
+      } else {
+        const fetchArticles = async () => {
+          try {
+            const response = await axios.get(
+              articlesUrl,
+              { headers: { Authorization: token }}
+            )
+            setArticles(response.data);
+          } catch (error) {
+            if (error?.response?.status == 401) logout()
+          }
+        }
+        fetchArticles()
+      }
+    }, [])
   }
 
   const postArticle = article => {
@@ -88,8 +111,8 @@ export default function App() {
   return (
     // ✨ fix the JSX: `Spinner`, `Message`, `LoginForm`, `ArticleForm` and `Articles` expect props ❗
     <>
-      <Spinner isActive={spinnerOn} />
-      <Message text={message}/>
+      <Spinner on={spinnerOn}/>
+      <Message message={message}/>
       <button id="logout" onClick={logout}>Logout from app</button>
       <div id="wrapper" style={{ opacity: spinnerOn ? "0.25" : "1" }}> {/* <-- do not change this line */}
         <h1>Advanced Web Applications</h1>
@@ -98,11 +121,22 @@ export default function App() {
           <NavLink id="articlesScreen" to="/articles">Articles</NavLink>
         </nav>
         <Routes>
-          <Route path="/" element={<LoginForm />} />
+          <Route path="/" element={<LoginForm login={login}/>} />
           <Route path="articles" element={
             <>
-              <ArticleForm />
-              <Articles />
+              <ArticleForm
+                postArticle={postArticle}
+                updateArticle={updateArticle}
+                setCurrentArticleId={setCurrentArticleId}
+                articles={articles}
+                
+              />
+              <Articles
+                articles={articles}
+                setCurrentArticleId={setCurrentArticleId}
+                deleteArticle={deleteArticle}
+                getArticles={getArticles}
+              />
             </>
           } />
         </Routes>
