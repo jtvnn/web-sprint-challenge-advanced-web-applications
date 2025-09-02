@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { NavLink, Routes, Route, useNavigate } from "react-router-dom";
 import Articles from "./Articles";
 import LoginForm from "./LoginForm";
@@ -72,7 +72,6 @@ export default function App() {
     setMessage("");
     setSpinnerOn(true);
 
-    //useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
       redirectToLogin();
@@ -84,12 +83,11 @@ export default function App() {
           });
           setArticles(response.data);
         } catch (error) {
-          if (error?.response?.status == 401) logout();
+          if (error?.response?.status === 401) logout();
         }
       };
       fetchArticles();
     }
-    //  }, [])
   };
 
   const postArticle = (article) => {
@@ -141,7 +139,25 @@ export default function App() {
   }
     const deleteArticle = (article_id) => {
       // ✨ implement
-    };
+    const token = localStorage.getItem("token");
+    if (!token) {
+      redirectToLogin();
+    } else {
+      const delArticle = async () => {
+        try {
+          const response = await axios.delete(
+            `${articlesUrl}/${article_id}`,
+            { headers: { Authorization: token } }
+          );
+          setArticles(articles.filter(a => a.article_id !== article_id));
+          setMessage(response.data.message);
+        } catch (error) {
+          if (error?.response?.status == 401) logout();
+        }
+      };
+      delArticle();
+    }
+    }
 
     return (
       // ✨ fix the JSX: `Spinner`, `Message`, `LoginForm`, `ArticleForm` and `Articles` expect props ❗
@@ -189,5 +205,4 @@ export default function App() {
         </div>
       </>
     );
-  };
-
+  }
