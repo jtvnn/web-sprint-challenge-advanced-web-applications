@@ -136,20 +136,19 @@ export default function App() {
       };
       putArticle();
     }
-  }
-    const deleteArticle = (article_id) => {
-      // ✨ implement
+  };
+  const deleteArticle = (article_id) => {
+    // ✨ implement
     const token = localStorage.getItem("token");
     if (!token) {
       redirectToLogin();
     } else {
       const delArticle = async () => {
         try {
-          const response = await axios.delete(
-            `${articlesUrl}/${article_id}`,
-            { headers: { Authorization: token } }
-          );
-          setArticles(articles.filter(a => a.article_id !== article_id));
+          const response = await axios.delete(`${articlesUrl}/${article_id}`, {
+            headers: { Authorization: token },
+          });
+          setArticles(articles.filter((a) => a.article_id !== article_id));
           setMessage(response.data.message);
         } catch (error) {
           if (error?.response?.status == 401) logout();
@@ -157,52 +156,52 @@ export default function App() {
       };
       delArticle();
     }
-    }
+  };
 
-    return (
-      // ✨ fix the JSX: `Spinner`, `Message`, `LoginForm`, `ArticleForm` and `Articles` expect props ❗
-      <>
-        <Spinner on={spinnerOn} />
-        <Message message={message} />
-        <button id="logout" onClick={logout}>
-          Logout from app
-        </button>
-        <div id="wrapper" style={{ opacity: spinnerOn ? "0.25" : "1" }}>
-          {" "}
-          {/* <-- do not change this line */}
-          <h1>Advanced Web Applications</h1>
-          <nav>
-            <NavLink id="loginScreen" to="/">
-              Login
-            </NavLink>
-            <NavLink id="articlesScreen" to="/articles">
-              Articles
-            </NavLink>
-          </nav>
-          <Routes>
-            <Route path="/" element={<LoginForm login={login} />} />
-            <Route
-              path="articles"
-              element={
-                <>
-                  <ArticleForm
-                    postArticle={postArticle}
-                    updateArticle={updateArticle}
-                    setCurrentArticleId={setCurrentArticleId}
-                    articles={articles}
-                  />
-                  <Articles
-                    articles={articles}
-                    setCurrentArticleId={setCurrentArticleId}
-                    deleteArticle={deleteArticle}
-                    getArticles={getArticles}
-                  />
-                </>
-              }
-            />
-          </Routes>
-          <footer>Bloom Institute of Technology 2024</footer>
-        </div>
-      </>
-    );
-  }
+  return (
+    // ✨ fix the JSX: `Spinner`, `Message`, `LoginForm`, `ArticleForm` and `Articles` expect props ❗
+    <>
+      <Spinner on={spinnerOn} />
+      <Message message={message} />
+      <button id="logout" onClick={logout}>
+        Logout from app
+      </button>
+      <div id="wrapper" style={{ opacity: spinnerOn ? "0.25" : "1" }}>
+        {" "}
+        {/* <-- do not change this line */}
+        <h1>Advanced Web Applications</h1>
+        <nav>
+          <NavLink id="loginScreen" to="/">
+            Login
+          </NavLink>
+          <NavLink id="articlesScreen" to="/articles">
+            Articles
+          </NavLink>
+        </nav>
+        <Routes>
+          <Route path="/" element={<LoginForm login={login} />} />
+          <Route
+            path="articles"
+            element={
+              <>
+                <ArticleForm
+                  postArticle={postArticle}
+                  updateArticle={updateArticle}
+                  setCurrentArticleId={setCurrentArticleId}
+                  articles={articles}
+                />
+                <Articles
+                  articles={articles}
+                  setCurrentArticleId={setCurrentArticleId}
+                  deleteArticle={deleteArticle}
+                  getArticles={getArticles}
+                />
+              </>
+            }
+          />
+        </Routes>
+        <footer>Bloom Institute of Technology 2024</footer>
+      </div>
+    </>
+  );
+}
