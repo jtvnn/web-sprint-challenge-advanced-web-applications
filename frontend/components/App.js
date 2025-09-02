@@ -20,7 +20,7 @@ export default function App() {
   // ✨ Research `useNavigate` in React Router v.6
   const navigate = useNavigate()
   const redirectToLogin = () => { /* ✨ implement */ 
-    navigate("/login");
+    navigate("/");
   }
   const redirectToArticles = () => { /* ✨ implement */
     navigate("/articles");
