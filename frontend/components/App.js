@@ -135,7 +135,6 @@ export default function App() {
             article,
             { headers: { Authorization: token } }
           );
-          //setArticles([...articles, response.data.articles]);
           setArticles(
             articles.map((a) =>
               a.article_id === response.data.article.article_id
@@ -144,6 +143,7 @@ export default function App() {
             )
           );
           setMessage(response.data.message);
+          setCurrentArticleId(null);
         } catch (error) {
           if (error?.response?.status == 401) logout();
         }
