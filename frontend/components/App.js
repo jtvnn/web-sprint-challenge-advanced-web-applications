@@ -17,6 +17,9 @@ export default function App() {
   const [currentArticleId, setCurrentArticleId] = useState();
   const [spinnerOn, setSpinnerOn] = useState(false);
 
+  const currentArticle = Array.isArray(articles)
+  ? articles.find(a => a && a.article_id === currentArticleId)
+  : undefined;
   // ✨ Research `useNavigate` in React Router v.6
   const navigate = useNavigate();
   const redirectToLogin = () => {
@@ -36,6 +39,7 @@ export default function App() {
     // using the helper above.
     localStorage.removeItem("token");
     redirectToLogin();
+    setMessage("Goodbye!");
   };
 
   const login = async ({ username, password }) => {
@@ -47,6 +51,7 @@ export default function App() {
     // to the Articles screen. Don't forget to turn off the spinner!
     setMessage("");
     setSpinnerOn(true);
+    
     try {
       const response = await axios.post(loginUrl, { username, password });
       const token = response.data.token;
@@ -81,12 +86,14 @@ export default function App() {
           const response = await axios.get(articlesUrl, {
             headers: { Authorization: token },
           });
-          setArticles(response.data);
+          setArticles(response.data.articles);
+          setMessage(response.data.message);
         } catch (error) {
           if (error?.response?.status === 401) logout();
         }
       };
       fetchArticles();
+      setSpinnerOn(false);
     }
   };
 
@@ -104,7 +111,7 @@ export default function App() {
           const response = await axios.post(articlesUrl, article, {
             headers: { Authorization: token },
           });
-          setArticles([...articles, response.data]);
+          setArticles([...articles, response.data.article]);
           setMessage(response.data.message);
         } catch (error) {
           if (error?.response?.status == 401) logout();
@@ -128,7 +135,14 @@ export default function App() {
             article,
             { headers: { Authorization: token } }
           );
-          setArticles([...articles, response.data]);
+          //setArticles([...articles, response.data.articles]);
+          setArticles(
+            articles.map((a) =>
+              a.article_id === response.data.article.article_id
+                ? response.data.article
+                : a
+            )
+          );
           setMessage(response.data.message);
         } catch (error) {
           if (error?.response?.status == 401) logout();
@@ -189,12 +203,14 @@ export default function App() {
                   updateArticle={updateArticle}
                   setCurrentArticleId={setCurrentArticleId}
                   articles={articles}
+                  currentArticle={currentArticle || null}
                 />
                 <Articles
                   articles={articles}
                   setCurrentArticleId={setCurrentArticleId}
                   deleteArticle={deleteArticle}
                   getArticles={getArticles}
+                  currentArticleId={currentArticleId}
                 />
               </>
             }
